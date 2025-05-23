@@ -5,7 +5,7 @@ import joblib
 # Page configuration
 st.set_page_config(page_title="Oyo State House Value Predictor", page_icon="🏠", layout="centered")
 
-# Elegant custom CSS styling
+# Elegant custom CSS
 st.markdown('''
     <style>
     html, body, [class*="css"]  {
@@ -33,18 +33,6 @@ st.markdown('''
         margin-top: 0.5rem;
         color: #dbeafe;
     }
-    .form-container {
-        background-color: #ffffffcc;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    .stTextInput>div>input, .stNumberInput>div>input, .stSelectbox>div>div {
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        padding: 0.6em;
-        font-size: 1rem;
-    }
     .stButton>button {
         background-color: #2563eb;
         color: white;
@@ -68,7 +56,7 @@ st.markdown('''
     </style>
 ''', unsafe_allow_html=True)
 
-# Add elegant header
+# Header
 st.markdown('''
     <div class="main-header">
         <h1>🏠 Oyo State House Value Predictor</h1>
@@ -84,7 +72,6 @@ def load_model():
 
 model, feature_columns = load_model()
 
-# Input Form
 regions = [
     "Ibadan", "Oyo", "Ogbomosho", "Iseyin", "Saki", "Igboho", "Eruwa", "Igbo-Ora", "Lanlate", "Okeho",
     "Kisi (Kishi)", "Fiditi", "Ilora", "Lalupon", "Awe", "Tede", "Sepeteri", "Ago-Amodu", "Ado-Awaye",
@@ -94,22 +81,27 @@ regions = [
 furnishings = ["unfurnished", "semi-furnished", "furnished"]
 yesno = ["yes", "no"]
 
+# Form with two-column layout
 with st.form("prediction_form"):
-    st.markdown('<div class="form-container">', unsafe_allow_html=True)
-    area = st.number_input("Area (sq.m)", min_value=50, max_value=500, value=150)
-    bedrooms = st.number_input("Bedrooms", min_value=1, max_value=6, value=3)
-    bathrooms = st.number_input("Bathrooms", min_value=1, max_value=4, value=2)
-    stories = st.number_input("Stories", min_value=1, max_value=3, value=1)
-    parking = st.number_input("Parking", min_value=0, max_value=4, value=1)
-    mainroad = st.selectbox("Mainroad", yesno)
-    guestroom = st.selectbox("Guestroom", yesno)
-    basement = st.selectbox("Basement", yesno)
-    hotwaterheating = st.selectbox("Hotwater Heating", yesno)
-    airconditioning = st.selectbox("Air Conditioning", yesno)
-    prefarea = st.selectbox("Preferred Area", yesno)
-    furnishingstatus = st.selectbox("Furnishing Status", furnishings)
-    region = st.selectbox("Region", regions)
-    st.markdown('</div>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        area = st.number_input("Area (sq.m)", min_value=50, max_value=500, value=150)
+        bedrooms = st.number_input("Bedrooms", min_value=1, max_value=6, value=3)
+        bathrooms = st.number_input("Bathrooms", min_value=1, max_value=4, value=2)
+        stories = st.number_input("Stories", min_value=1, max_value=3, value=1)
+        parking = st.number_input("Parking", min_value=0, max_value=4, value=1)
+        mainroad = st.selectbox("Mainroad", yesno)
+        guestroom = st.selectbox("Guestroom", yesno)
+
+    with col2:
+        basement = st.selectbox("Basement", yesno)
+        hotwaterheating = st.selectbox("Hotwater Heating", yesno)
+        airconditioning = st.selectbox("Air Conditioning", yesno)
+        prefarea = st.selectbox("Preferred Area", yesno)
+        furnishingstatus = st.selectbox("Furnishing Status", furnishings)
+        region = st.selectbox("Region", regions)
+
     submit = st.form_submit_button("Predict House Value")
 
 # Prediction logic
@@ -141,6 +133,5 @@ if submit:
             input_encoded[col] = 0
     input_encoded = input_encoded[feature_columns]
 
-    # Predict
     pred = model.predict(input_encoded)[0]
     st.success(f"Estimated House Value: ₦{pred:,.2f}")
