@@ -1,0 +1,6 @@
+# requirements.txt
+# Add your Python dependencies here
+scikit-learn
+pandas
+numpy
+matplotlib
